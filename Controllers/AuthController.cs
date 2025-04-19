@@ -54,6 +54,16 @@ namespace JwtAuth.Controllers
             return Ok("You're authenticated!");
         }
 
+         [HttpPost("refresh-token")]
+        public async Task<ActionResult<TokenResponseDto>> RefreshToken(RefreshTokenRequestDto request)
+        {
+            var result = await _authService.RefreshTokensAsync(request);
+            if (result is null || result.AccessToken is null || result.RefreshToken is null)
+                return Unauthorized("Invalid refresh token.");
+
+            return Ok(result);
+        }
+
         [Authorize(Roles = "admin")]
         [HttpGet("admin-only")]
         public IActionResult AdminOnlyEndpoint()
